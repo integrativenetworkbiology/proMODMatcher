@@ -20,8 +20,26 @@ cis_table<-sub("--arg6=","",sixth)
 
 type1_tumr_pro <- read.delim(type1_file, row.names=1, check.names=F)
 type2_tumr_pro <- read.delim(type2_file, row.names=1, check.names=F)
+if(cis_table=="None") { 
+	if(!type1 =="mRNA") { print("wrong type1") } 
+	else if (type2=="mRNA") { 
+		cis_table <- cbind(rownames(type1_tumr_pro), rownames(type1_tumr_pro))
+	} else if(type2=="miRNA") { 
+		cis_table <- read.delim("./data/Matching_array_miRNA.txt", header=T)
+	} else if (type2 =="HM27") { 
+		cis_table <- read.delim("./data/Matching_array_MethylationHM27.txt", header=T)
+	} else if (type2 =="HM450") {
+                cis_table <- read.delim("./data/Matching_array_MethylationHM450.txt", header=T)
+	} else if (type2 =="CNV") { 
+                cis_table <- cbind(rownames(type1_tumr_pro), rownames(type1_tumr_pro))
+	} else if (type2 =="RPPA") { 
+		cis_table <- read.delim("./data/Matching_array_protein.txt", header=T)			
+	} else { 
+		print ("wrong type2") 
+	}
+} else { 
 cis_table <- read.delim(cis_table, header=T)
-
+}
 cismatch <- apply(cis_table, 1, function(x) { tt <- c(match(x[1], rownames(type1_tumr_pro)), match(x[2], rownames(type2_tumr_pro)))
 					      sum(is.na(tt))})
 cis_table_filter <- cis_table[which(cismatch==0),]
